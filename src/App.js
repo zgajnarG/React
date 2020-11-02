@@ -1,25 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { Switch, Route } from "react-router-dom";
 
-function App() {
+import TabPage from './TabPage';
+import UserInfo from './UserInfo';
+import UserContext from './UserContext';
+import NoMatch from './NoMatch';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+const App = () => {
+
+  const localStorageUsers = localStorage.getItem('users');
+  const tabUsers = localStorageUsers ? JSON.parse(localStorageUsers) : [];
+
+  const [users, setUsers] = useState(tabUsers);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UserContext.Provider value={[users, setUsers]}>
+      <Switch>
+        <Route path="/user/:id" component={UserInfo} />
+        <Route path="/tab" component={TabPage} />
+        <Route exact path="/" component={TabPage} />
+        <Route path="*" component={NoMatch} />
+      </Switch>
+    </UserContext.Provider>
   );
 }
 
